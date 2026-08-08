@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Главная — визуальная модель · Bitovka37</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #121612;
+      --pine: #1a332a;
+      --pine-2: #243f34;
+      --fog: #e7eee6;
+      --mist: #cfd9d0;
+      --amber: #e08a1e;
+      --amber-ink: #1a1208;
+      --muted: #5a675f;
+      --paper: #f7faf6;
+      --line: rgba(26, 51, 42, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: Onest, system-ui, sans-serif;
+      background: #1a1e1b;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(18, 22, 18, 0.92);
+      backdrop-filter: blur(8px);
+      color: #d5ddd6;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .toolbar a { color: #9fb0a6; text-decoration: none; font-size: 13px; }
+    .toolbar a:hover { color: #fff; }
+    .toolbar .title {
+      font-family: Unbounded, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    .toggles { display: flex; gap: 6px; }
+    .toggles button {
+      font-family: Onest, sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: #c5d0c8;
+      cursor: pointer;
+    }
+    .toggles button[aria-pressed="true"] {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: var(--amber-ink);
+    }
+    .viewport-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 28px 16px 64px;
+    }
+    .frame {
+      width: 100%;
+      max-width: 1120px;
+      background: var(--paper);
+      overflow: hidden;
+      transition: max-width 0.35s ease, border-radius 0.35s ease;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+    }
+    body[data-vp="mobile"] .frame {
+      max-width: 390px;
+      border-radius: 28px;
+      border: 8px solid #0d100e;
+    }
+    /* —— site chrome —— */
+    .site-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px;
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 5;
+      color: #eef3ef;
+    }
+    body[data-vp="mobile"] .site-nav { padding: 14px 18px; }
+    .site-nav .logo {
+      font-family: Unbounded, sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+    .site-nav .nav-links {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    body[data-vp="mobile"] .site-nav .nav-links { display: none; }
+    .site-nav .nav-links a { color: inherit; text-decoration: none; opacity: 0.88; }
+    .site-nav .phone { font-weight: 600; white-space: nowrap; }
+    .burger {
+      display: none;
+      width: 28px; height: 18px;
+      border: none; background: transparent; padding: 0; cursor: pointer;
+    }
+    .burger span {
+      display: block; height: 2px; background: #fff; margin: 4px 0;
+    }
+    body[data-vp="mobile"] .burger { display: block; }
+
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 28px 56px;
+      color: #f3f7f3;
+      background:
+        linear-gradient(180deg, rgba(10,18,14,0.25) 0%, rgba(10,18,14,0.55) 45%, rgba(10,18,14,0.88) 100%),
+        linear-gradient(135deg, #1e3a30 0%, #2f4a3c 40%, #1a2e26 100%);
+      overflow: hidden;
+    }
+    body[data-vp="mobile"] .hero {
+      min-height: 100vh;
+      padding: 0 18px 36px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 70% 40%, rgba(224,138,30,0.12), transparent 55%),
+        repeating-linear-gradient(
+          -18deg,
+          transparent,
+          transparent 40px,
+          rgba(255,255,255,0.015) 40px,
+          rgba(255,255,255,0.015) 41px
+        );
+      pointer-events: none;
+    }
+    .hero-visual {
+      position: absolute;
+      right: 8%;
+      bottom: 12%;
+      width: min(42%, 420px);
+      aspect-ratio: 4/3;
+      background:
+        linear-gradient(160deg, rgba(255,255,255,0.08), transparent),
+        #3d5a4a;
+      border: 1px solid rgba(255,255,255,0.12);
+      opacity: 0.9;
+    }
+    .hero-visual::after {
+      content: "фото изделия";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      font-family: Unbounded, sans-serif;
+    }
+    body[data-vp="mobile"] .hero-visual {
+      right: 0; left: 0; bottom: 38%;
+      width: 100%;
+      height: 42%;
+      aspect-ratio: auto;
+      border: none;
+      opacity: 0.55;
+    }
+    .hero-copy { position: relative; z-index: 2; max-width: 34rem; }
+    .hero-brand {
+      font-family: Unbounded, sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+      margin-bottom: 18px;
+    }
+    body[data-vp="mobile"] .hero-brand { font-size: 2.35rem; }
+    .hero-line {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      font-weight: 500;
+      line-height: 1.35;
+      max-width: 28ch;
+      margin-bottom: 10px;
+    }
+    .hero-sub {
+      font-size: 0.95rem;
+      opacity: 0.78;
+      max-width: 36ch;
+      margin-bottom: 28px;
+    }
+    .cta-group { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 22px;
+      font-family: Onest, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--amber); color: var(--amber-ink); }
+    .btn-ghost {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.35);
+    }
+
+    section {
+      padding: 72px 28px;
+    }
+    body[data-vp="mobile"] section { padding: 48px 18px; }
+    .sec-title {
+      font-family: Unbounded, sans-serif;
+      font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      color: var(--pine);
+    }
+    .sec-lead {
+      color: var(--muted);
+      max-width: 36rem;
+      margin-bottom: 32px;
+      font-size: 1rem;
+    }
+
+    .dirs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    body[data-vp="mobile"] .dirs { grid-template-columns: 1fr; }
+    .dir {
+      position: relative;
+      min-height: 160px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: var(--pine-2);
+      color: #e8efe9;
+      text-decoration: none;
+      overflow: hidden;
+    }
+    .dir:nth-child(2) { background: #2a4a3c; }
+    .dir:nth-child(3) { background: #1f3830; }
+    .dir:nth-child(4) { background: #314f42; }
+    .dir:nth-child(5) { background: #243830; }
+    .dir:nth-child(6) { background: #1a2e28; }
+    .dir span {
+      font-family: Unbounded, sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+    .dir small {
+      opacity: 0.65;
+      font-size: 0.8rem;
+      margin-top: 4px;
+    }
+
+    .hits {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      background: var(--fog);
+      margin: 0;
+      padding: 72px 28px;
+    }
+    body[data-vp="mobile"] .hits {
+      grid-template-columns: 1fr;
+      padding: 48px 18px;
+    }
+    .hit {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+    .hit-photo {
+      aspect-ratio: 4/3;
+      background: linear-gradient(145deg, #4a6b5a, #2a4036);
+      display: grid;
+      place-items: center;
+      color: rgba(255,255,255,0.4);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-family: Unbounded, sans-serif;
+    }
+    .hit-body { padding: 16px 16px 20px; }
+    .hit-body h3 {
+      font-family: Unbounded, sans-serif;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+    .hit-body p { color: var(--muted); font-size: 0.9rem; margin-bottom: 12px; }
+    .hit-body .price {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--pine);
+    }
+
+    .why {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: center;
+    }
+    body[data-vp="mobile"] .why { grid-template-columns: 1fr; gap: 24px; }
+    .why ul {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      gap: 14px;
+    }
+    .why li {
+      padding-left: 0;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+    .why li strong {
+      display: block;
+      font-family: Unbounded, sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      color: var(--pine);
+    }
+    .why li span { color: var(--muted); font-size: 0.9rem; }
+    .why-visual {
+      min-height: 280px;
+      background:
+        linear-gradient(160deg, #2d4a3c, #1a2e26);
+      display: grid;
+      place-items: center;
+      color: rgba(255,255,255,0.4);
+      font-family: Unbounded, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    body[data-vp="mobile"] .steps { grid-template-columns: 1fr 1fr; }
+    .step {
+      background: var(--paper);
+      padding: 24px 18px;
+    }
+    .step b {
+      font-family: Unbounded, sans-serif;
+      font-size: 0.75rem;
+      color: var(--amber);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .step p {
+      font-family: Unbounded, sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      color: var(--pine);
+    }
+    .step small { display: block; margin-top: 8px; color: var(--muted); font-size: 0.8rem; font-family: Onest, sans-serif; }
+
+    .prices { background: var(--pine); color: #e8efe9; }
+    .prices .sec-title { color: #f3f7f3; }
+    .prices .sec-lead { color: rgba(232,239,233,0.7); }
+    .price-table { display: grid; gap: 0; }
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.95rem;
+    }
+    .price-row strong { font-weight: 600; }
+    .prices .btn-primary { margin-top: 28px; }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    body[data-vp="mobile"] .gallery { grid-template-columns: 1fr 1fr; }
+    .gallery div {
+      aspect-ratio: 1;
+      background: #3a5548;
+    }
+    .gallery div:nth-child(2) { background: #2f473c; }
+    .gallery div:nth-child(3) { background: #456354; }
+    .gallery div:nth-child(4) { background: #31483c; }
+    .gallery div:nth-child(5) { background: #3d5c4c; }
+    .gallery div:nth-child(6) { background: #2a3f35; }
+
+    .contact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      background: var(--fog);
+    }
+    body[data-vp="mobile"] .contact { grid-template-columns: 1fr; }
+    .form {
+      display: grid;
+      gap: 12px;
+      background: #fff;
+      padding: 24px;
+      border: 1px solid var(--line);
+    }
+    .form label {
+      display: grid;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .form input, .form textarea {
+      font: inherit;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .form textarea { min-height: 88px; resize: vertical; }
+    .contact-side h3 {
+      font-family: Unbounded, sans-serif;
+      font-size: 1.25rem;
+      color: var(--pine);
+      margin-bottom: 16px;
+    }
+    .contact-side p { color: var(--muted); margin-bottom: 10px; font-size: 0.95rem; }
+    .contact-side .big-phone {
+      font-family: Unbounded, sans-serif;
+      font-size: 1.35rem;
+      color: var(--pine);
+      margin: 16px 0;
+    }
+    .map-ph {
+      margin-top: 20px;
+      height: 140px;
+      background: var(--mist);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: Unbounded, sans-serif;
+    }
+
+    footer.site {
+      padding: 32px 28px;
+      background: var(--ink);
+      color: #9aa89f;
+      font-size: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: space-between;
+    }
+    body[data-vp="mobile"] footer.site { padding: 24px 18px; flex-direction: column; }
+    footer.site .flogo {
+      font-family: Unbounded, sans-serif;
+      color: #e8efe9;
+      font-size: 1rem;
+    }
+
+    .mobile-sticky {
+      display: none;
+      position: sticky;
+      bottom: 0;
+      background: var(--ink);
+      padding: 12px 14px;
+      gap: 8px;
+    }
+    body[data-vp="mobile"] .mobile-sticky { display: flex; }
+    .mobile-sticky .btn { flex: 1; padding: 12px; font-size: 0.85rem; }
+    .mobile-sticky .btn-call {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+    }
+  </style>
+</head>
+<body data-vp="desktop">
+  <div class="toolbar">
+    <div>
+      <a href="index.html">← модели</a>
+      <span class="title"> · Главная mid-fi</span>
+    </div>
+    <div class="toggles" role="group" aria-label="Viewport">
+      <button type="button" data-set="desktop" aria-pressed="true">Desktop</button>
+      <button type="button" data-set="mobile" aria-pressed="false">Mobile</button>
+    </div>
+  </div>
+
+  <div class="viewport-wrap">
+    <div class="frame" id="frame">
+      <header class="site-nav">
+        <div class="logo">Bitovka37</div>
+        <nav class="nav-links">
+          <a href="#dirs">Каталог</a>
+          <a href="#prices">Цены</a>
+          <a href="#works">Работы</a>
+          <a href="#form">Контакты</a>
+          <a class="phone" href="tel:+79000000000">+7 (901) ···-··-··</a>
+        </nav>
+        <button class="burger" aria-label="Меню" type="button"><span></span><span></span><span></span></button>
+      </header>
+
+      <section class="hero" style="padding-top:72px">
+        <div class="hero-visual" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="hero-brand">Bitovka37</p>
+          <p class="hero-line">Бытовки и веранды под ключ</p>
+          <p class="hero-sub">Производство в Иваново, доставка и монтаж по области. Типовые и на заказ.</p>
+          <div class="cta-group">
+            <a class="btn btn-primary" href="#form">Рассчитать стоимость</a>
+            <a class="btn btn-ghost" href="#dirs">Смотреть проекты</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="dirs">
+        <h2 class="sec-title">Что делаем</h2>
+        <p class="sec-lead">Выберите направление — дальше размеры, комплектация и ориентир цены.</p>
+        <div class="dirs">
+          <a class="dir" href="catalog-card.html"><span>Дачные бытовки</span><small>от 120 000 ₽</small></a>
+          <a class="dir" href="catalog-card.html"><span>С верандой</span><small>дом на участке</small></a>
+          <a class="dir" href="catalog-card.html"><span>Строительные</span><small>для объекта</small></a>
+          <a class="dir" href="catalog-card.html"><span>Бани и бочки</span><small>под ключ</small></a>
+          <a class="dir" href="catalog-card.html"><span>Хозблоки</span><small>инвентарь</small></a>
+          <a class="dir" href="catalog-card.html"><span>Индивидуально</span><small>по чертежу</small></a>
+        </div>
+      </section>
+
+      <div class="hits" id="hits">
+        <article class="hit">
+          <div class="hit-photo">фото</div>
+          <div class="hit-body">
+            <h3>БК-1 · 6×2,4</h3>
+            <p>Эконом, ДВП / вагонка</p>
+            <p class="price">от 128 000 ₽</p>
+          </div>
+        </article>
+        <article class="hit">
+          <div class="hit-photo">фото</div>
+          <div class="hit-body">
+            <h3>С верандой</h3>
+            <p>Дачный домик с зоной отдыха</p>
+            <p class="price">цена по запросу</p>
+          </div>
+        </article>
+        <article class="hit">
+          <div class="hit-photo">фото</div>
+          <div class="hit-body">
+            <h3>Распашонка</h3>
+            <p>Две комнаты, перегородка</p>
+            <p class="price">от 135 000 ₽</p>
+          </div>
+        </article>
+      </div>
+
+      <section>
+        <div class="why">
+          <div>
+            <h2 class="sec-title">Почему Bitovka37</h2>
+            <p class="sec-lead">Тот же производительский смысл, что у сильного SEO-сайта — плюс прозрачность для клиента.</p>
+            <ul>
+              <li><strong>Свой цех</strong><span>Контроль качества и сроков на месте</span></li>
+              <li><strong>Регион 37</strong><span>Иваново и область: доставка, разгрузка, монтаж</span></li>
+              <li><strong>Под задачу</strong><span>От строительной до дачной с верандой</span></li>
+              <li><strong>Понятная смета</strong><span>Размер, отделка, опции — без сюрпризов</span></li>
+            </ul>
+          </div>
+          <div class="why-visual">фото цеха / карта</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sec-title">Как заказать</h2>
+        <p class="sec-lead">Четыре шага от звонка до установки на участке.</p>
+        <div class="steps">
+          <div class="step"><b>01</b><p>Заявка</p><small>Звонок, WhatsApp или форма</small></div>
+          <div class="step"><b>02</b><p>Смета</p><small>Размер, отделка, опции</small></div>
+          <div class="step"><b>03</b><p>Цех</p><small>Производство в срок</small></div>
+          <div class="step"><b>04</b><p>Монтаж</p><small>Доставка и установка</small></div>
+        </div>
+      </section>
+
+      <section class="prices" id="prices">
+        <h2 class="sec-title">Ориентир цен</h2>
+        <p class="sec-lead">Срез для быстрого решения. Полная матрица — на странице прайса или в PDF.</p>
+        <div class="price-table">
+          <div class="price-row"><span>БК-1 · 6×2,4 · ДВП</span><strong>от 128 000 ₽</strong></div>
+          <div class="price-row"><span>БК-2 · 7×2,4</span><strong>от 135 000 ₽</strong></div>
+          <div class="price-row"><span>БК-3 · 8×2,4</span><strong>от 144 000 ₽</strong></div>
+          <div class="price-row"><span>С верандой · типовой</span><strong>по запросу</strong></div>
+        </div>
+        <a class="btn btn-primary" href="catalog-card.html">Открыть полный прайс</a>
+      </section>
+
+      <section id="works">
+        <h2 class="sec-title">Наши работы</h2>
+        <p class="sec-lead">Реальные объекты — главный визуальный якорь доверия.</p>
+        <div class="gallery">
+          <div></div><div></div><div></div>
+          <div></div><div></div><div></div>
+        </div>
+      </section>
+
+      <section class="contact" id="form">
+        <form class="form" onsubmit="return false;">
+          <h2 class="sec-title" style="margin-bottom:4px">Оставить заявку</h2>
+          <p class="sec-lead" style="margin-bottom:8px">Перезвоним и сориентируем по срокам и цене.</p>
+          <label>Имя<input type="text" placeholder="Как к вам обращаться" /></label>
+          <label>Телефон<input type="tel" placeholder="+7" /></label>
+          <label>Комментарий<textarea placeholder="Размер, веранда, участок…"></textarea></label>
+          <button class="btn btn-primary" type="submit">Отправить</button>
+        </form>
+        <div class="contact-side">
+          <h3>Контакты</h3>
+          <p class="big-phone">+7 (901) ···-··-··</p>
+          <p>WhatsApp / Telegram</p>
+          <p>г. Иваново<br />производство · адрес уточняется</p>
+          <div class="map-ph">карта</div>
+        </div>
+      </section>
+
+      <footer class="site">
+        <div class="flogo">Bitovka37</div>
+        <div>Бытовки · веранды · Иваново</div>
+        <div>Политика конфиденциальности</div>
+      </footer>
+
+      <div class="mobile-sticky">
+        <a class="btn btn-call" href="tel:+79000000000">Позвонить</a>
+        <a class="btn btn-primary" href="#form">Заявка</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const body = document.body;
+    const buttons = document.querySelectorAll(".toggles button");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const vp = btn.getAttribute("data-set");
+        body.setAttribute("data-vp", vp);
+        buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      });
+    });
+  </script>
+</body>
+</html>

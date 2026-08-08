@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bitovka37 — модели сайта</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #141910;
+      --fog: #e4ebe3;
+      --pine: #1e3d32;
+      --amber: #d97706;
+      --muted: #5c6b62;
+      --line: #c5d0c6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Onest, system-ui, sans-serif;
+      background: var(--fog);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 80px; }
+    .brand {
+      font-family: Unbounded, sans-serif;
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0 0 8px;
+      color: var(--pine);
+    }
+    .lead { color: var(--muted); max-width: 42rem; margin: 0 0 40px; }
+    h2 {
+      font-family: Unbounded, sans-serif;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--pine);
+      margin: 40px 0 16px;
+    }
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+    a.card {
+      display: block;
+      padding: 20px 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    a.card:hover {
+      border-color: var(--pine);
+      transform: translateY(-2px);
+    }
+    a.card strong {
+      font-family: Unbounded, sans-serif;
+      font-size: 1rem;
+      display: block;
+      margin-bottom: 6px;
+    }
+    a.card span { color: var(--muted); font-size: 0.95rem; }
+    .note {
+      margin-top: 40px;
+      padding: 16px 18px;
+      border-left: 3px solid var(--amber);
+      background: #fff;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="brand">Bitovka37</p>
+    <p class="lead">
+      Модели визитки производителя бытовок и веранд (Иваново / 37).
+      Сначала согласовываем структуру и экраны — затем вёрстка в прод.
+    </p>
+
+    <h2>Экраны</h2>
+    <div class="grid">
+      <a class="card" href="wireframes.html">
+        <strong>Wireframes</strong>
+        <span>Каркас блоков главной: desktop и mobile рядом</span>
+      </a>
+      <a class="card" href="home.html">
+        <strong>Главная — визуальная модель</strong>
+        <span>Mid-fi композиция с переключателем viewport</span>
+      </a>
+      <a class="card" href="catalog-card.html">
+        <strong>Каталог / категория</strong>
+        <span>Модель входа в направление и прайс-среза</span>
+      </a>
+      <a class="card" href="ANALYSIS.md">
+        <strong>Анализ и план</strong>
+        <span>Разбор текущего сайта, что добавить, фазы</span>
+      </a>
+    </div>
+
+    <p class="note">
+      Эталон для смысла: <code>bytovki37.ru</code> (прайс, категории, SEO).
+      Тильда-референс аренды: <code>bitovka37.com</code>.
+      Домен <code>bitovka37.ru</code> сейчас не резолвится — заложим под него.
+    </p>
+  </div>
+</body>
+</html>

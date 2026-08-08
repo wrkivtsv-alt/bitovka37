@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Каталог / категория — модель · Bitovka37</title>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #121612;
+      --pine: #1a332a;
+      --fog: #e7eee6;
+      --amber: #e08a1e;
+      --amber-ink: #1a1208;
+      --muted: #5a675f;
+      --paper: #f7faf6;
+      --line: rgba(26, 51, 42, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: Onest, system-ui, sans-serif;
+      background: #1a1e1b;
+      color: var(--ink);
+    }
+    .toolbar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; flex-wrap: wrap; gap: 12px;
+      align-items: center; justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(18, 22, 18, 0.92);
+      color: #d5ddd6;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .toolbar a { color: #9fb0a6; text-decoration: none; font-size: 13px; }
+    .toolbar .title { font-family: Unbounded, sans-serif; font-size: 12px; }
+    .toggles { display: flex; gap: 6px; }
+    .toggles button {
+      font: 600 12px Onest, sans-serif;
+      padding: 8px 14px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: #c5d0c8;
+      cursor: pointer;
+    }
+    .toggles button[aria-pressed="true"] {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: var(--amber-ink);
+    }
+    .viewport-wrap { display: flex; justify-content: center; padding: 28px 16px 64px; }
+    .frame {
+      width: 100%;
+      max-width: 1120px;
+      background: var(--paper);
+      overflow: hidden;
+      transition: max-width 0.35s ease, border-radius 0.35s ease;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+    }
+    body[data-vp="mobile"] .frame {
+      max-width: 390px;
+      border-radius: 28px;
+      border: 8px solid #0d100e;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--line);
+    }
+    body[data-vp="mobile"] .top { padding: 14px 18px; }
+    .logo {
+      font-family: Unbounded, sans-serif;
+      font-weight: 700;
+      color: var(--pine);
+      text-decoration: none;
+    }
+    .crumb {
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 16px 28px 0;
+    }
+    body[data-vp="mobile"] .crumb { padding: 12px 18px 0; }
+
+    .cat-hero {
+      padding: 28px 28px 40px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: end;
+    }
+    body[data-vp="mobile"] .cat-hero {
+      grid-template-columns: 1fr;
+      padding: 20px 18px 28px;
+    }
+    .cat-hero h1 {
+      font-family: Unbounded, sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      letter-spacing: -0.03em;
+      color: var(--pine);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .cat-hero p { color: var(--muted); max-width: 36ch; margin-bottom: 20px; }
+    .btn {
+      display: inline-flex;
+      padding: 12px 20px;
+      font: 600 0.9rem Onest, sans-serif;
+      background: var(--amber);
+      color: var(--amber-ink);
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .cat-photo {
+      min-height: 220px;
+      background: linear-gradient(145deg, #4a6b5a, #2a4036);
+      display: grid;
+      place-items: center;
+      color: rgba(255,255,255,0.4);
+      font-family: Unbounded, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    body[data-vp="mobile"] .cat-photo { min-height: 180px; order: -1; }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 28px 24px;
+    }
+    body[data-vp="mobile"] .filters { padding: 0 18px 20px; }
+    .chip {
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--pine);
+      cursor: pointer;
+    }
+    .chip[aria-pressed="true"] {
+      background: var(--pine);
+      color: #fff;
+      border-color: var(--pine);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      padding: 0 28px 40px;
+    }
+    body[data-vp="mobile"] .grid {
+      grid-template-columns: 1fr;
+      padding: 0 18px 32px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+    }
+    .card-ph {
+      aspect-ratio: 16/10;
+      background: #3a5548;
+    }
+    .card:nth-child(2) .card-ph { background: #2f473c; }
+    .card:nth-child(3) .card-ph { background: #456354; }
+    .card:nth-child(4) .card-ph { background: #31483c; }
+    .card-body { padding: 14px 16px 18px; }
+    .card-body h2 {
+      font-family: Unbounded, sans-serif;
+      font-size: 1rem;
+      margin-bottom: 6px;
+      color: var(--pine);
+    }
+    .card-body p { font-size: 0.85rem; color: var(--muted); margin-bottom: 10px; }
+    .card-body .price { font-weight: 700; color: var(--pine); }
+
+    .price-block {
+      margin: 0 28px 48px;
+      background: var(--pine);
+      color: #e8efe9;
+      padding: 28px;
+    }
+    body[data-vp="mobile"] .price-block { margin: 0 18px 36px; padding: 20px; }
+    .price-block h2 {
+      font-family: Unbounded, sans-serif;
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+    .price-block .lead {
+      opacity: 0.7;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    .prow {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.9rem;
+    }
+    .note {
+      margin-top: 16px;
+      font-size: 0.8rem;
+      opacity: 0.65;
+    }
+
+    .cta-strip {
+      margin: 0 28px 48px;
+      padding: 28px;
+      background: var(--fog);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    body[data-vp="mobile"] .cta-strip {
+      margin: 0 18px 36px;
+      padding: 20px;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .cta-strip p {
+      font-family: Unbounded, sans-serif;
+      font-size: 1.1rem;
+      color: var(--pine);
+      max-width: 20ch;
+    }
+
+    footer {
+      padding: 24px 28px;
+      background: var(--ink);
+      color: #9aa89f;
+      font-size: 0.85rem;
+    }
+    body[data-vp="mobile"] footer { padding: 20px 18px; }
+  </style>
+</head>
+<body data-vp="desktop">
+  <div class="toolbar">
+    <div>
+      <a href="index.html">← модели</a>
+      <a href="home.html"> · главная</a>
+      <span class="title"> · Категория</span>
+    </div>
+    <div class="toggles" role="group" aria-label="Viewport">
+      <button type="button" data-set="desktop" aria-pressed="true">Desktop</button>
+      <button type="button" data-set="mobile" aria-pressed="false">Mobile</button>
+    </div>
+  </div>
+
+  <div class="viewport-wrap">
+    <div class="frame">
+      <div class="top">
+        <a class="logo" href="home.html">Bitovka37</a>
+        <span style="font-size:0.85rem;font-weight:600;color:var(--pine)">+7 (901) ···</span>
+      </div>
+      <p class="crumb">Главная / Каталог / С верандой</p>
+
+      <div class="cat-hero">
+        <div>
+          <h1>Бытовки с верандой</h1>
+          <p>Дачный домик с зоной отдыха: типовые размеры и изготовление по вашему плану. Иваново и область.</p>
+          <a class="btn" href="#">Запросить расчёт</a>
+        </div>
+        <div class="cat-photo">фото категории</div>
+      </div>
+
+      <div class="filters" role="group" aria-label="Фильтр размера">
+        <button class="chip" type="button" aria-pressed="true">Все</button>
+        <button class="chip" type="button" aria-pressed="false">6 м</button>
+        <button class="chip" type="button" aria-pressed="false">7 м</button>
+        <button class="chip" type="button" aria-pressed="false">8 м</button>
+        <button class="chip" type="button" aria-pressed="false">На заказ</button>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="card-ph"></div>
+          <div class="card-body">
+            <h2>Веранда · открытая</h2>
+            <p>6×2,4 + веранда 2 м</p>
+            <p class="price">от … ₽</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-ph"></div>
+          <div class="card-body">
+            <h2>Веранда · с перилами</h2>
+            <p>7×2,4 + зона отдыха</p>
+            <p class="price">от … ₽</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-ph"></div>
+          <div class="card-body">
+            <h2>Домик-бытовка</h2>
+            <p>Двускат, утепление</p>
+            <p class="price">от … ₽</p>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-ph"></div>
+          <div class="card-body">
+            <h2>Индивидуальный проект</h2>
+            <p>По эскизу заказчика</p>
+            <p class="price">смета</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="price-block">
+        <h2>Прайс-срез по категории</h2>
+        <p class="lead">На mobile — короткие строки. Полная матрица отделок — аккордеон или отдельный файл.</p>
+        <div class="prow"><span>6×2,4 + веранда · ДВП</span><strong>от … ₽</strong></div>
+        <div class="prow"><span>7×2,4 + веранда · вагонка</span><strong>от … ₽</strong></div>
+        <div class="prow"><span>8×2,4 + веранда · ЛДСП</span><strong>от … ₽</strong></div>
+        <p class="note">Цены-плейсхолдеры: подставим из актуального прайса клиента.</p>
+      </div>
+
+      <div class="cta-strip">
+        <p>Нужен размер не из списка?</p>
+        <a class="btn" href="home.html#form">Оставить заявку</a>
+      </div>
+
+      <footer>Bitovka37 · модель категории · не финальная вёрстка</footer>
+    </div>
+  </div>
+
+  <script>
+    const body = document.body;
+    document.querySelectorAll(".toggles button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        body.setAttribute("data-vp", btn.getAttribute("data-set"));
+        document.querySelectorAll(".toggles button").forEach((b) =>
+          b.setAttribute("aria-pressed", String(b === btn))
+        );
+      });
+    });
+    document.querySelectorAll(".filters .chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".filters .chip").forEach((c) =>
+          c.setAttribute("aria-pressed", "false")
+        );
+        chip.setAttribute("aria-pressed", "true");
+      });
+    });
+  </script>
+</body>
+</html>

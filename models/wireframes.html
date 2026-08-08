@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wireframes — Bitovka37</title>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1f1c;
+      --muted: #6a756e;
+      --line: #b8c4bc;
+      --fill: #dfe6e1;
+      --hero: #2a4036;
+      --amber: #d97706;
+      --bg: #f2f5f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Onest, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header.page {
+      padding: 28px 24px 8px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header.page h1 {
+      font-family: Unbounded, sans-serif;
+      font-size: 1.25rem;
+      margin: 0 0 6px;
+    }
+    header.page p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    header.page a { color: var(--hero); }
+    .stage {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+      padding: 24px 16px 64px;
+      align-items: flex-start;
+    }
+    .device-label {
+      font-family: Unbounded, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .desktop {
+      width: min(860px, 100%);
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .phone {
+      width: 320px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 0 0 10px #e8ece9;
+    }
+    .phone .notch {
+      height: 22px;
+      background: var(--ink);
+      margin: 8px auto 0;
+      width: 100px;
+      border-radius: 0 0 12px 12px;
+    }
+    .block {
+      border-bottom: 1px dashed var(--line);
+      position: relative;
+    }
+    .block:last-child { border-bottom: none; }
+    .tag {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 2px 6px;
+      color: var(--muted);
+      z-index: 2;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+    }
+    .nav .logo {
+      font-family: Unbounded, sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .nav .links { display: flex; gap: 12px; color: var(--muted); }
+    .phone .nav .links { display: none; }
+    .hero {
+      background: var(--hero);
+      color: #e8efe9;
+      min-height: 280px;
+      padding: 48px 28px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .phone .hero { min-height: 360px; padding: 32px 18px 24px; }
+    .hero .brand-line {
+      font-family: Unbounded, sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      max-width: 14ch;
+    }
+    .phone .hero .brand-line { font-size: 1.55rem; max-width: 11ch; }
+    .hero .sub { font-size: 14px; opacity: 0.85; max-width: 36ch; }
+    .phone .hero .sub { font-size: 13px; }
+    .cta-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--amber);
+      color: #111;
+      border: none;
+    }
+    .btn.ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.45);
+      color: #fff;
+    }
+    .section { padding: 20px 16px; }
+    .section h3 {
+      font-family: Unbounded, sans-serif;
+      font-size: 13px;
+      margin: 0 0 6px;
+    }
+    .section .hint { font-size: 11px; color: var(--muted); margin: 0 0 14px; }
+    .row3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .phone .row3 { grid-template-columns: 1fr; }
+    .cell {
+      background: var(--fill);
+      min-height: 72px;
+      display: flex;
+      align-items: flex-end;
+      padding: 10px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .phone .cell { min-height: 88px; }
+    .row2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; }
+    .phone .row2 { grid-template-columns: 1fr; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .phone .steps { grid-template-columns: 1fr 1fr; }
+    .step {
+      border: 1px solid var(--line);
+      padding: 10px;
+      font-size: 11px;
+      min-height: 64px;
+    }
+    .step b { display: block; font-family: Unbounded, sans-serif; font-size: 10px; margin-bottom: 4px; }
+    .price-lines .line {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+    }
+    .form-box {
+      background: var(--fill);
+      padding: 14px;
+      display: grid;
+      gap: 8px;
+    }
+    .form-box .fake-input {
+      height: 32px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .sticky-bar {
+      display: none;
+      position: sticky;
+      bottom: 0;
+      background: var(--ink);
+      color: #fff;
+      padding: 10px 12px;
+      font-size: 12px;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .phone .sticky-bar { display: flex; }
+    .sticky-bar .btn { padding: 8px 12px; font-size: 11px; }
+    .legend {
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      padding: 0 24px;
+      font-size: 13px;
+      color: var(--muted);
+      display: grid;
+      gap: 6px;
+    }
+    .legend strong { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <header class="page">
+    <h1>Wireframes — главная</h1>
+    <p><a href="index.html">← к хабу</a> · Одна работа на секцию · Hero без карточек · Mobile sticky CTA</p>
+  </header>
+
+  <div class="stage">
+    <!-- DESKTOP -->
+    <div>
+      <div class="device-label">Desktop · 1280</div>
+      <div class="desktop">
+        <div class="block">
+          <span class="tag">01 nav</span>
+          <div class="nav">
+            <div class="logo">Bitovka37</div>
+            <div class="links">
+              <span>Каталог</span><span>Цены</span><span>Работы</span><span>Контакты</span>
+              <span style="font-weight:600">+7 ···</span>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="tag">02 hero · full-bleed</span>
+          <div class="hero">
+            <div class="brand-line">Bitovka37</div>
+            <div class="sub">Бытовки и веранды под ключ в Иваново и области — от производства до монтажа</div>
+            <div class="cta-row">
+              <span class="btn">Рассчитать стоимость</span>
+              <span class="btn ghost">Смотреть проекты</span>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="tag">03 направления</span>
+          <div class="section">
+            <h3>Что делаем</h3>
+            <p class="hint">Визуальные входы в категории — не таблица</p>
+            <div class="row3">
+              <div class="cell">Бытовки дачные</div>
+              <div class="cell">С верандой</div>
+              <div class="cell">Строительные</div>
+              <div class="cell">Бани / бочки</div>
+              <div class="cell">Хозблоки</div>
+              <div class="cell">На заказ</div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="tag">04 хиты</span>
+          <div class="section">
+            <h3>Популярные решения</h3>
+            <p class="hint">3 позиции: фото + размер + «от N ₽» + CTA</p>
+            <div class="row3">
+              <div class="cell" style="min-height:120px">6×2,4 · от 128 000 ₽</div>
+              <div class="cell" style="min-height:120px">С верандой · от …</div>
+              <div class="cell" style="min-height:120px">Распашонка · от …</div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="tag">05 доверие</span>
+          <div class="section">
+            <h3>Почему мы</h3>
+            <div class="row2">
+              <div class="cell" style="min-height:100px">Свой цех · сроки · гарантия · доставка по 37 региону</div>
+              <div class="cell" style="min-height:100px">Фото производства / карта</div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="tag">06 шаги</span>
+          <div class="section">
+            <h3>Как заказать</h3>
+            <div class="steps">
+              <div class="step"><b>01</b>Заявка или звонок</div>
+              <div class="step"><b>02</b>Подбор / смета</div>
+              <div class="step"><b>03</b>Производство</div>
+              <div class="step"><b>04</b>Доставка и монтаж</div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="tag">07 прайс-срез</span>
+          <div class="section">
+            <h3>Ориентир цен</h3>
+            <p class="hint">3–5 строк + «полный прайс» · без простыни на первом экране</p>
+            <div class="price-lines">
+              <div class="line"><span>БК-1 · 6×2,4 · ДВП</span><span>от 128 000 ₽</span></div>
+              <div class="line"><span>БК-2 · 7×2,4</span><span>от 135 000 ₽</span></div>
+              <div class="line"><span>С верандой · типовой</span><span>от … ₽</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="tag">08 работы</span>
+          <div class="section">
+            <h3>Наши работы</h3>
+            <div class="row3">
+              <div class="cell" style="min-height:90px">фото</div>
+              <div class="cell" style="min-height:90px">фото</div>
+              <div class="cell" style="min-height:90px">фото</div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="tag">09 заявка + контакты</span>
+          <div class="section">
+            <div class="row2">
+              <div class="form-box">
+                <strong style="font-size:13px;font-family:Unbounded,sans-serif">Оставить заявку</strong>
+                <div class="fake-input"></div>
+                <div class="fake-input"></div>
+                <div class="fake-input"></div>
+                <span class="btn" style="width:fit-content">Отправить</span>
+              </div>
+              <div class="cell" style="min-height:140px;flex-direction:column;align-items:flex-start;gap:6px">
+                <span>Телефон / WhatsApp</span>
+                <span>Адрес цеха · Иваново</span>
+                <span>Карта</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <span class="tag">10 footer</span>
+          <div class="section" style="font-size:11px;color:var(--muted)">
+            SEO-ссылки категорий · политика · © Bitovka37
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE -->
+    <div>
+      <div class="device-label">Mobile · 390</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="block">
+          <div class="nav">
+            <div class="logo">Bitovka37</div>
+            <div style="font-size:18px">☰</div>
+          </div>
+        </div>
+        <div class="block">
+          <div class="hero">
+            <div class="brand-line">Bitovka37</div>
+            <div class="sub">Бытовки и веранды под ключ — Иваново</div>
+            <div class="cta-row">
+              <span class="btn">Рассчитать</span>
+              <span class="btn ghost">Проекты</span>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <div class="section">
+            <h3>Что делаем</h3>
+            <div class="row3">
+              <div class="cell">Бытовки дачные</div>
+              <div class="cell">С верандой</div>
+              <div class="cell">Строительные</div>
+              <div class="cell">Бани · хозблоки · заказ</div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <div class="section">
+            <h3>Хиты</h3>
+            <div class="row3">
+              <div class="cell" style="min-height:100px">карточка 1</div>
+              <div class="cell" style="min-height:100px">карточка 2</div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <div class="section">
+            <h3>Как заказать</h3>
+            <div class="steps">
+              <div class="step"><b>01</b>Заявка</div>
+              <div class="step"><b>02</b>Смета</div>
+              <div class="step"><b>03</b>Цех</div>
+              <div class="step"><b>04</b>Монтаж</div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <div class="section">
+            <h3>Цены</h3>
+            <div class="price-lines">
+              <div class="line"><span>6×2,4</span><span>от 128 тыс.</span></div>
+              <div class="line"><span>С верандой</span><span>от …</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="block">
+          <div class="section">
+            <h3>Заявка</h3>
+            <div class="form-box">
+              <div class="fake-input"></div>
+              <div class="fake-input"></div>
+              <span class="btn" style="width:fit-content">Отправить</span>
+            </div>
+          </div>
+        </div>
+        <div class="sticky-bar">
+          <span>Позвонить</span>
+          <span class="btn">Заявка</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div><strong>Правило hero:</strong> бренд + 1 заголовок-оффер + 1 поддержка + CTA + фото изделия (фон). Без бейджей и карточек поверх.</div>
+    <div><strong>Карточки</strong> допустимы только в каталоге/хитах как зона выбора.</div>
+    <div><strong>SEO:</strong> ключи и гео сохраняем в текстах секций и footer — не ценой первого экрана.</div>
+  </div>
+</body>
+</html>

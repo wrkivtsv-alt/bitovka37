@@ -2,15 +2,17 @@
   const header = document.getElementById("header");
   const nav = document.getElementById("nav");
   const toggle = document.querySelector(".nav-toggle");
-  const slides = [...document.querySelectorAll(".hero__slide")];
-  const dotsWrap = document.querySelector(".hero__dots");
   const form = document.getElementById("lead-form");
   const formNote = document.getElementById("form-note");
   const fleet = document.getElementById("fleet-track");
   const fleetPrev = document.getElementById("fleet-prev");
   const fleetNext = document.getElementById("fleet-next");
+  const dotsWrap = document.getElementById("puzzle-dots");
+  const leftImgs = [...document.querySelectorAll(".puzzle__panel--a .puzzle__img")];
+  const cards = [...document.querySelectorAll(".puzzle-slide")];
+  const cardCount = cards.length;
+  const photoCount = leftImgs.length;
 
-  /* Sticky header state */
   const onScroll = () => {
     if (!header) return;
     header.classList.toggle("is-solid", window.scrollY > 24);
@@ -18,7 +20,6 @@
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  /* Mobile nav */
   if (toggle && nav) {
     toggle.addEventListener("click", () => {
       const open = nav.classList.toggle("is-open");
@@ -32,44 +33,63 @@
     });
   }
 
-  /* Hero background carousel — fade only, no bouncing icons */
-  let index = 0;
+  /* Hero: left photo + right slide synced */
+  let slide = 0;
   let timer;
+  const slideCount = Math.min(photoCount, cardCount) || Math.max(photoCount, cardCount);
 
-  const goTo = (i) => {
-    if (!slides.length) return;
-    index = (i + slides.length) % slides.length;
-    slides.forEach((slide, n) => slide.classList.toggle("is-active", n === index));
+  const ctaBtn = document.getElementById("hero-puzzle-cta");
+  const ctaSlideIndex = Math.max(0, slideCount - 1);
+
+  const goSlide = (i) => {
+    if (!slideCount) return;
+    slide = (i + slideCount) % slideCount;
+    leftImgs.forEach((img, n) => img.classList.toggle("is-active", n === slide));
+    cards.forEach((el, n) => el.classList.toggle("is-active", n === slide));
     if (dotsWrap) {
       [...dotsWrap.children].forEach((dot, n) =>
-        dot.classList.toggle("is-active", n === index)
+        dot.classList.toggle("is-active", n === slide)
       );
     }
+    if (ctaBtn) ctaBtn.hidden = slide !== ctaSlideIndex;
   };
 
-  if (slides.length && dotsWrap) {
-    slides.forEach((_, n) => {
+  if (slideCount && dotsWrap) {
+    for (let n = 0; n < slideCount; n += 1) {
       const dot = document.createElement("button");
       dot.type = "button";
       dot.className = "hero__dot" + (n === 0 ? " is-active" : "");
       dot.setAttribute("aria-label", `Слайд ${n + 1}`);
       dot.addEventListener("click", () => {
-        goTo(n);
+        goSlide(n);
         restart();
       });
       dotsWrap.appendChild(dot);
-    });
+    }
   }
 
-  const tick = () => goTo(index + 1);
   const restart = () => {
     clearInterval(timer);
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    timer = setInterval(tick, 5500);
+    timer = setInterval(() => goSlide(slide + 1), 4800);
   };
+
   restart();
 
-  /* Fleet horizontal scroll */
+  const scrollToLead = (e) => {
+    const id = e.currentTarget.getAttribute("data-scroll-to") || "lead-form";
+    const target = document.getElementById(id) || document.getElementById("contact");
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.setTimeout(() => {
+      target.querySelector?.("input[name='name']")?.focus({ preventScroll: true });
+    }, 450);
+  };
+  document.querySelectorAll("[data-scroll-to]").forEach((el) => {
+    el.addEventListener("click", scrollToLead);
+  });
+
   const scrollFleet = (dir) => {
     if (!fleet) return;
     const amount = fleet.clientWidth * 0.85;
@@ -78,14 +98,20 @@
   fleetPrev?.addEventListener("click", () => scrollFleet(-1));
   fleetNext?.addEventListener("click", () => scrollFleet(1));
 
-  /* Lead form — demo accept */
+  const phoneInput = document.getElementById("lead-phone");
+  phoneInput?.addEventListener("input", () => {
+    phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 11);
+  });
+
   form?.addEventListener("submit", (e) => {
-    e.preventDefault();
+    if (phoneInput) {
+      phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 11);
+    }
     if (!form.checkValidity()) {
+      e.preventDefault();
       form.reportValidity();
       return;
     }
-    form.reset();
     if (formNote) {
       formNote.hidden = false;
     }

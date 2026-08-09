@@ -3,7 +3,5 @@
 .cursor
 models
 *.iml
-_ref_*.html
-main.go
-go.mod
 AGENTS.md
+README.md

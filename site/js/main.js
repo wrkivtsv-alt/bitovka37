@@ -2,6 +2,7 @@
   const header = document.getElementById("header");
   const nav = document.getElementById("nav");
   const toggle = document.querySelector(".nav-toggle");
+  const themeToggle = document.getElementById("theme-toggle");
   const form = document.getElementById("lead-form");
   const formNote = document.getElementById("form-note");
   const fleet = document.getElementById("fleet-track");
@@ -12,6 +13,32 @@
   const cards = [...document.querySelectorAll(".puzzle-slide")];
   const cardCount = cards.length;
   const photoCount = leftImgs.length;
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+  const getTheme = () =>
+    document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+
+  const applyTheme = (theme) => {
+    const next = theme === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+    try {
+      localStorage.setItem("taft-theme", next);
+    } catch (_) {}
+    if (themeMeta) themeMeta.setAttribute("content", next === "dark" ? "#0e0e0e" : "#0b0b0b");
+    if (themeToggle) {
+      themeToggle.setAttribute(
+        "aria-label",
+        next === "dark" ? "Включить светлую тему" : "Включить тёмную тему"
+      );
+    }
+  };
+
+  applyTheme(getTheme());
+  themeToggle?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    applyTheme(getTheme() === "dark" ? "light" : "dark");
+  });
 
   const onScroll = () => {
     if (!header) return;
@@ -20,15 +47,42 @@
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
+  const closeNav = () => {
+    if (!nav || !toggle) return;
+    nav.classList.remove("is-open");
+    toggle.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("nav-open");
+  };
+
+  const openNav = () => {
+    if (!nav || !toggle) return;
+    nav.classList.add("is-open");
+    toggle.setAttribute("aria-expanded", "true");
+    document.body.classList.add("nav-open");
+  };
+
   if (toggle && nav) {
-    toggle.addEventListener("click", () => {
-      const open = nav.classList.toggle("is-open");
-      toggle.setAttribute("aria-expanded", String(open));
+    toggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (nav.classList.contains("is-open")) closeNav();
+      else openNav();
     });
+
     nav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        nav.classList.remove("is-open");
-        toggle.setAttribute("aria-expanded", "false");
+      link.addEventListener("click", (e) => {
+        const href = link.getAttribute("href") || "";
+        closeNav();
+
+        if (href.startsWith("#") && href.length > 1) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            window.requestAnimationFrame(() => {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+          }
+        }
       });
     });
   }

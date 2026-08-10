@@ -3,5 +3,5 @@ services:
     build: .
     image: taft-site:latest
     ports:
-      - "8080:80"
+      - "8090:80"
     restart: unless-stopped
